@@ -1,7 +1,6 @@
 {
   "title": "Tropy",
   "background": "background.png",
-  "icon": "../../icons/dev/tropy.icns",
   "icon-size": 80,
   "contents": [
     {
