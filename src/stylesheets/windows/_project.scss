@@ -2,6 +2,9 @@
 // Project window
 // --------------------------------------------------
 
+$gray-lightest: #f6f6f6;
+$red: #f00;
+
 html,
 body,
 #view,
@@ -19,7 +22,7 @@ body {
 }
 
 #sidebar {
-  background: #f6f6f6;
+  background: $gray-lightest;
   display: flex;
   height: 100%;
 }
@@ -35,5 +38,5 @@ body {
   left: 50%;
   width: 100%;
   height: 100%;
-  background: red;
+  background: $red;
 }
