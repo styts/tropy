@@ -6,50 +6,97 @@
 // Abstracts
 // --------------------------------------------------
 
-@import
-  "../abstracts/variables",
-  "../abstracts/mixins",
-  "../abstracts/functions",
-  "../abstracts/placeholders";
+//@import
+//  "../abstracts/variables",
+//  "../abstracts/mixins",
+//  "../abstracts/functions",
+//  "../abstracts/placeholders";
+//
+//
+//// Scaffolding
+//// --------------------------------------------------
+//
+//@import
+//  "../base/reset",
+//  "../base/base",
+//  "../base/type",
+//  "../base/utilities";
+//
+//
+//// Components
+//// --------------------------------------------------
+//
+//@import
+//  "../components/project",
+//  "../components/toolbar",
+//  "../components/sidebar",
+//  "../components/items",
+//  "../components/item-list-view",
+//  "../components/item",
+//  "../components/panel-group",
+//  "../components/panel",
+//  "../components/viewer",
+//  "../components/icons",
+//  "../components/search",
+//  "../components/button",
+//  "../components/note-list",
+//  "../components/tabs",
+//  "../components/dl",
+//  "../components/editable",
+//  "../components/resizable";
+//
+//
+//// Partials
+//// --------------------------------------------------
+//
+//@import
+//  "../partials/window-controls",
+//  "../partials/forms",
+//  "../partials/tool-group";
 
 
-// Scaffolding
-// --------------------------------------------------
 
-@import
-  "../base/reset",
-  "../base/base",
-  "../base/type",
-  "../base/utilities";
+* {
+  box-sizing: border-box;
+}
 
+html, body, #view {
+  height: 100%;
+}
 
-// Components
-// --------------------------------------------------
+body {
+  margin: 0;
+}
 
-@import
-  "../components/project",
-  "../components/toolbar",
-  "../components/sidebar",
-  "../components/items",
-  "../components/item-list-view",
-  "../components/item",
-  "../components/panel-group",
-  "../components/panel",
-  "../components/viewer",
-  "../components/icons",
-  "../components/search",
-  "../components/button",
-  "../components/note-list",
-  "../components/tabs",
-  "../components/dl",
-  "../components/editable",
-  "../components/resizable";
+#project {
+  height: 100%;
+  overflow: hidden;
+}
 
+#project-view {
+  display: flex;
+  height: 100%;
+}
 
-// Partials
-// --------------------------------------------------
+.resizable {
+}
 
-@import
-  "../partials/window-controls",
-  "../partials/forms",
-  "../partials/tool-group";
+#sidebar {
+  background: green;
+  display: flex;
+  height: 100%;
+}
+
+.sidebar-body {
+  flex: 1 1 auto;
+  overflow-y: scroll;
+}
+
+#item {
+  position: absolute;
+  top: 0;
+  left: calc(100% - 320px);
+  width: 100%;
+  height: 100%;
+  background: red;
+}
