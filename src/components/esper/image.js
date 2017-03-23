@@ -1,28 +1,40 @@
 'use strict'
 
 const React = require('react')
-const { PropTypes } = React
+const { PureComponent, PropTypes } = React
 const { Toolbar } = require('../toolbar')
+const { EsperStage } = require('./stage')
 
-const EsperImage = ({ photo, isVisible }) => (
-  <section className="esper">
-    <header className="esper-header">
-      <Toolbar draggable={ARGS.frameless}/>
-    </header>
 
-    {isVisible && photo && photo.path &&
-      <img src={`${photo.protocol}://${photo.path}`}/>}
+class EsperImage extends PureComponent {
 
-  </section>
-)
+  get src() {
+    const { photo } = this.props
+    return photo && `${photo.protocol}://${photo.path}`
+  }
 
-EsperImage.propTypes = {
-  photo: PropTypes.object,
-  isVisible: PropTypes.bool
-}
+  render() {
+    return (
+      <section className="esper">
+        <header className="esper-header">
+          <Toolbar draggable={ARGS.frameless}/>
+        </header>
 
-EsperImage.defaultProps = {
-  isVisible: false
+        <EsperStage
+          isDisabled={!this.props.isVisible}
+          image={this.src}/>
+      </section>
+    )
+  }
+
+  static propTypes = {
+    photo: PropTypes.object,
+    isVisible: PropTypes.bool
+  }
+
+  static defaultProps = {
+    isVisible: false
+  }
 }
 
 module.exports = {
