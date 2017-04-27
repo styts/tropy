@@ -1,6 +1,6 @@
 'use strict'
 
-const { debug, warn, verbose } = require('../common/log')
+const { debug, warn, verbose, logger } = require('../common/log')
 const ms = require('ms')
 
 function prepareLoggingObject(type, meta, payload) {
@@ -26,6 +26,7 @@ module.exports = {
           // TODO this branch can be improved
           warn(`${prepareLoggingObject(type, meta)} failed: ${payload.message}`)
           debug(payload.stack, payload.message)
+          logger.error({ err: payload }) // key needs to be called `err` for bunyan
           break
         default:
           verbose(prepareLoggingObject(

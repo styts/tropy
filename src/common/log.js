@@ -7,6 +7,7 @@ const bunyan = require('bunyan')
 
 const logger = bunyan.createLogger({
   name: 'tropy',
+  serializers: { err: bunyan.stdSerializers.err },
   process: process.type
 })
 
@@ -40,15 +41,6 @@ function init(dir) {
           path: join(__dirname, '..', '..', 'tmp', 'test.log'),
           level: 'debug'
         })
-
-        // logger.add(transports.File, {
-        //   filename: join(__dirname, '..', '..', 'tmp', 'test.log'),
-        //   maxsize: 1024 * 1024,
-        //   maxFiles: 1,
-        //   tailable: true,
-        //   handleExceptions: true,
-        //   humanReadableUnhandledException: true,
-        // })
       }
       break
   }
