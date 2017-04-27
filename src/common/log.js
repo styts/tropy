@@ -2,6 +2,7 @@
 
 const { join } = require('path')
 const { assign } = Object
+const { existsSync, mkdirSync } = require('fs')
 
 const bunyan = require('bunyan')
 
@@ -11,30 +12,39 @@ const logger = bunyan.createLogger({
   process: process.type
 })
 
+function logToStdout() {
+  logger.addStream({
+    stream: process.stdout,
+    level: 'debug'
+  })
+}
+
+function logToFolder(dir) {
+  if (dir) {
+    let logDir = join(dir, 'log')
+
+    // ensure logging dir exists
+    if (!existsSync(logDir)) mkdirSync(logDir)
+
+    logger.addStream({
+      type: 'rotating-file',
+      path: join(logDir, `${process.type}.log`),
+      level: 'debug',
+      period: '1d',
+      count: 3
+    })
+  }
+}
 
 function init(dir) {
-
   switch (ARGS.environment) {
     case 'development':
-      logger.addStream({
-        stream: process.stdout,
-        level: 'debug'
-      })
-      // eslint-disable-line no-fallthrough
-
-    case 'production':
-      if (dir) {
-        logger.addStream({
-          type: 'rotating-file',
-          path: join(dir, `${process.type}.log`),
-          level: 'info',
-          period: '1d',
-          count: 3
-        })
-      }
-
+      logToStdout()
+      logToFolder(dir)
       break
-
+    case 'production':
+      logToFolder(dir)
+      break
     case 'test':
       if (!process.env.CI) {
         logger.addStream({
@@ -48,7 +58,7 @@ function init(dir) {
   if (ARGS.debug) logger.level('debug')
 
   logger.debug('logger initialized at level %s',
-               bunyan.resolveLevel(logger.level()))
+               bunyan.nameFromLevel[logger.level()])
 
   return module.exports
 }
