@@ -12,6 +12,10 @@ const logger = bunyan.createLogger({
   process: process.type
 })
 
+function ensureFolder(dir) {
+  if (!existsSync(dir)) mkdirSync(dir)
+}
+
 function logToStdout() {
   logger.addStream({
     stream: process.stdout,
@@ -23,8 +27,8 @@ function logToFolder(dir) {
   if (dir) {
     let logDir = join(dir, 'log')
 
-    // ensure logging dir exists
-    if (!existsSync(logDir)) mkdirSync(logDir)
+    ensureFolder(dir)
+    ensureFolder(logDir)
 
     logger.addStream({
       type: 'rotating-file',
