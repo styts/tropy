@@ -2,7 +2,7 @@
 
 const { join } = require('path')
 const { assign } = Object
-const { existsSync, mkdirSync } = require('fs')
+const { sync: mkdirp } = require('mkdirp')
 
 const bunyan = require('bunyan')
 
@@ -12,10 +12,6 @@ const logger = bunyan.createLogger({
   process: process.type
 })
 
-function ensureFolder(dir) {
-  if (!existsSync(dir)) mkdirSync(dir)
-}
-
 function logToStdout() {
   logger.addStream({
     stream: process.stdout,
@@ -24,30 +20,27 @@ function logToStdout() {
 }
 
 function logToFolder(dir) {
-  if (dir) {
-    let logDir = join(dir, 'log')
+  mkdirp(dir)
 
-    ensureFolder(dir)
-    ensureFolder(logDir)
-
-    logger.addStream({
-      type: 'rotating-file',
-      path: join(logDir, `${process.type}.log`),
-      level: 'debug',
-      period: '1d',
-      count: 3
-    })
-  }
+  logger.addStream({
+    type: 'rotating-file',
+    path: join(dir, `${process.type}.log`),
+    level: 'debug',
+    period: '1d',
+    count: 3
+  })
 }
 
 function init(dir) {
+  let logDir = join(dir, 'log')
+
   switch (ARGS.environment) {
     case 'development':
       logToStdout()
-      logToFolder(dir)
+      logToFolder(logDir)
       break
     case 'production':
-      logToFolder(dir)
+      logToFolder(logDir)
       break
     case 'test':
       if (!process.env.CI) {
