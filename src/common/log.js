@@ -60,13 +60,13 @@ function init(dir) {
   return module.exports
 }
 
-// module.exports = logger
 module.exports = assign(init, {
   logger,
   log: logger.info.bind(logger),      // default, info 30
+  fatal: logger.fatal.bind(logger),   // 60
   error: logger.error.bind(logger),   // 50
   warn: logger.warn.bind(logger),     // 40
   info: logger.info.bind(logger),     // 30
-  verbose: logger.debug.bind(logger), // 20
-  debug: logger.trace.bind(logger)    // 10
+  debug: logger.debug.bind(logger),   // 20
+  trace: logger.trace.bind(logger)    // 10
 })
