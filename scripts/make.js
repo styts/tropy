@@ -164,7 +164,7 @@ target.window = ([name]) => {
 </body>
 </html>`)
 
-  template(join(home, 'src', 'windows', `${name}.js`), "'use strict'\n\n{\n\}")
+  template(join(home, 'src', 'windows', `${name}.js`), "'use strict'\n")
 
   const PLATFORMS = ['linux', 'darwin', 'win32']
   const THEMES = ['light', 'dark']
@@ -173,7 +173,7 @@ target.window = ([name]) => {
     for (let theme of THEMES) {
       template(
         join(home, 'src', 'stylesheets', platform, `${name}-${theme}.scss`),
-        `$platform: "${platform}";\n$theme: "${theme}";`
+        `$platform: "${platform}";\n$theme: "${theme}\n";`
       )
     }
   }
