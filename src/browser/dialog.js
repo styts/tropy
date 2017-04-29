@@ -1,7 +1,7 @@
 'use strict'
 
 const { dialog, ipcMain: ipc, BrowserWindow } = require('electron')
-const { warn, verbose } = require('../common/log')
+const { warn, info } = require('../common/log')
 
 module.exports = {
 
@@ -21,7 +21,7 @@ module.exports = {
 
       .catch(error => {
         warn(`dialog open failed: ${error.message}`)
-        verbose(error.stack)
+        info(error.stack)
 
         sender.send('dialog', { id, payload: {
           message: error.message

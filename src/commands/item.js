@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const { warn, verbose } = require('../common/log')
+const { warn, info } = require('../common/log')
 const { call, put, select } = require('redux-saga/effects')
 const { Command } = require('./command')
 const { prompt, openImages, fail  } = require('../dialog')
@@ -80,7 +80,7 @@ class Import extends Command {
 
         } catch (error) {
           warn(`Failed to create thumbnail: ${error.message}`)
-          verbose(error.stack)
+          info(error.stack)
         }
 
         yield [
@@ -94,7 +94,7 @@ class Import extends Command {
 
       } catch (error) {
         warn(`Failed to import item: ${error.message}`)
-        verbose(error.stack)
+        info(error.stack)
 
         fail(error)
       }

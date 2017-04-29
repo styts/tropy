@@ -10,7 +10,7 @@ const { normalize } = require('path')
 const { using, resolve } = require('bluebird')
 const { readFileAsync: read } = require('fs')
 const { createPool } = require('generic-pool')
-const { debug, info, verbose, warn } = require('./log')
+const { debug, info, warn } = require('./log')
 const { entries } = Object
 const { project } = require('../models')
 
@@ -30,7 +30,7 @@ class Database extends EventEmitter {
       var db = new Database(path, 'w+', { max: 1 })
       await project.create(db, options)
 
-      verbose(`created project db at ${db.path}`)
+      info(`created project db at ${db.path}`)
 
       return db.path
 
@@ -107,7 +107,7 @@ class Database extends EventEmitter {
         }
 
         if (ms > 25) {
-          return verbose(message, { query, time })
+          return info(message, { query, time })
         }
 
         debug(message, { query, time })

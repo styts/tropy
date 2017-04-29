@@ -7,7 +7,7 @@ const {
   app, shell, ipcMain: ipc, BrowserWindow, systemPreferences: pref
 } = require('electron')
 
-const { verbose, warn } = require('../common/log')
+const { info, warn } = require('../common/log')
 const { open, hasOverlayScrollBars } = require('./window')
 const { all } = require('bluebird')
 const { existsSync: exists } = require('fs')
@@ -90,7 +90,7 @@ class Tropy extends EventEmitter {
 
     try {
       file = resolve(file)
-      verbose(`opening ${file}...`)
+      info(`opening ${file}...`)
 
       if (this.win) {
         if (file) {
@@ -223,7 +223,7 @@ class Tropy extends EventEmitter {
       ]))
 
       .tap(() => this.emit('app:restored'))
-      .tap(() => verbose('app state restored'))
+      .tap(() => info('app state restored'))
   }
 
   persist() {
@@ -302,14 +302,14 @@ class Tropy extends EventEmitter {
       })
 
       .on('app:clear-recent-projects', () => {
-        verbose('clearing recent projects...')
+        info('clearing recent projects...')
 
         this.state.recent = []
         this.emit('app:reload-menu')
       })
 
       .on('app:switch-theme', (_, theme) => {
-        verbose(`switching to "${theme}" theme...`)
+        info(`switching to "${theme}" theme...`)
 
         this.state.theme = theme
         this.broadcast('theme', theme)
@@ -370,7 +370,7 @@ class Tropy extends EventEmitter {
         if (quit || !darwin) app.quit()
       })
       .on('quit', () => {
-        verbose('saving app state')
+        info('saving app state')
         this.persist()
       })
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const { debug, warn, verbose, logger } = require('../common/log')
+const { debug, warn, info, logger } = require('../common/log')
 const ms = require('ms')
 
 function prepareLoggingObject(type, meta, payload) {
@@ -29,7 +29,7 @@ module.exports = {
           logger.error({ err: payload }) // key needs to be called `err` for bunyan
           break
         default:
-          verbose(prepareLoggingObject(
+          info(prepareLoggingObject(
             type, meta, payload), type)
       }
 

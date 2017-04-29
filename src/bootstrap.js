@@ -11,7 +11,7 @@ const START = performance.now()
 }
 
 
-const { verbose } = require('./common/log')(ARGS.home, ARGS)
+const { info } = require('./common/log')(ARGS.home, ARGS)
 const { remote } = require('electron')
 const { ready } = require('./dom')
 const { win } = require('./window')
@@ -23,7 +23,7 @@ ready.then(() => {
 
   const DONE = performance.now()
 
-  verbose('%s ready after %dms (%dms)',
+  info('%s ready after %dms (%dms)',
       win.type, (DONE - START).toFixed(3), (DONE - READY).toFixed(3))
 })
 
