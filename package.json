@@ -40,7 +40,8 @@
     "postinstall": "npm run rebuild",
     "test": "node scripts/make test",
     "prewatch": "npm run make compile",
-    "watch": "node scripts/watch"
+    "watch": "node scripts/watch",
+    "logs": "tail -f tmp/log/*.log | bunyan --time local"
   },
   "devDependencies": {
     "babel-cli": "^6.1.2",
