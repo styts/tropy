@@ -1,6 +1,6 @@
 'use strict'
 
-const { warn, verbose } = require('../common/log')
+const { warn, info } = require('../common/log')
 const { call, put, select } = require('redux-saga/effects')
 const { get } = require('../common/util')
 const mod = require('../models/item')
@@ -37,7 +37,7 @@ module.exports = {
           result = yield call(mod.all, db, { tags, sort, query })
       }
 
-      verbose(`*search query took ${ms(Date.now() - START)}`)
+      info(`*search query took ${ms(Date.now() - START)}`)
 
       yield put(act.qr.items.update(result))
 
@@ -61,7 +61,7 @@ module.exports = {
 
     } catch (error) {
       warn(`unexpectedly failed in *search: ${error.message}`)
-      verbose(error.stack)
+      info(error.stack)
     }
   },
 
@@ -120,7 +120,7 @@ module.exports = {
 
     } catch (error) {
       warn(`unexpectedly failed in *load: ${error.message}`)
-      verbose(error.stack)
+      info(error.stack)
     }
   }
 }

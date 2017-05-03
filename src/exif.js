@@ -1,7 +1,7 @@
 'use strict'
 
 const parse = require('exif-reader')
-const { verbose } = require('./common/log')
+const { info } = require('./common/log')
 
 module.exports = {
   exif(buffer) {
@@ -24,7 +24,7 @@ module.exports = {
         }
 
       } catch (error) {
-        verbose(`EXIF extraction failed: ${error.message}`)
+        info(`EXIF extraction failed: ${error.message}`)
       } finally {
         resolve(data)
       }

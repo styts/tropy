@@ -1,13 +1,19 @@
 'use strict'
 
-const { debug, warn, verbose } = require('../common/log')
-const { gray } = require('colors/safe')
+const { debug, warn, info, logger } = require('../common/log')
 const ms = require('ms')
 
-function format(type, meta) {
-  return (meta.rel) ?
-    `${type} ${gray(`#${meta.seq}(${meta.rel}) Δ${ms(meta.now - meta.was)}`)}` :
-    `${type} ${gray('#' + meta.seq)}`
+function prepareLoggingObject(type, meta, payload) {
+  let evidence = {
+    type,
+    payload,
+    seq: meta.seq
+  }
+  if (meta.rel) {
+    evidence.rel = meta.rel
+    evidence.ms = ms(meta.now - meta.was)
+  }
+  return evidence
 }
 
 module.exports = {
@@ -17,11 +23,14 @@ module.exports = {
 
       switch (true) {
         case !!error:
-          warn(`${format(type, meta)} failed: ${payload.message}`)
-          debug(payload.message, payload.stack)
+          // TODO this branch can be improved
+          warn(`${prepareLoggingObject(type, meta)} failed: ${payload.message}`)
+          debug(payload.stack, payload.message)
+          logger.error({ err: payload }) // key needs to be called `err` for bunyan
           break
         default:
-          verbose(format(type, meta))
+          info(prepareLoggingObject(
+            type, meta, payload), type)
       }
 
       return next(action)

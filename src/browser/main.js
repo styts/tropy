@@ -42,11 +42,11 @@ if (process.env.TROPY_RUN_UNIT_TESTS === 'true') {
   if (!require('./squirrel')()) {
     const { all }  = require('bluebird')
     const { once } = require('../common/util')
-    const { info, verbose } = require('../common/log')(userdata)
+    const { info } = require('../common/log')(userdata)
 
     if (opts.environment !== 'test') {
       if (app.makeSingleInstance(() => tropy.open(...opts._))) {
-        verbose('other instance detected, exiting...')
+        info('other instance detected, exiting...')
         app.exit(0)
       }
     }
@@ -55,8 +55,8 @@ if (process.env.TROPY_RUN_UNIT_TESTS === 'true') {
       app.commandLine.appendSwitch('force-device-scale-factor', opts.scale)
     }
 
-    verbose(`started in ${opts.e} mode`)
-    verbose(`using ${app.getPath('userData')}`)
+    info(`started in ${opts.e} mode`)
+    info(`using ${app.getPath('userData')}`)
 
     const tropy = new (require('./tropy'))()
 
@@ -92,8 +92,9 @@ if (process.env.TROPY_RUN_UNIT_TESTS === 'true') {
       tropy.open(...opts._)
     })
 
-    app.on('quit', (_, code) => {
-      verbose(`quit with exit code ${code}`)
-    })
+    app
+      .on('quit', (_, code) => {
+        info(`quit with exit code ${code}`)
+      })
   }
 }

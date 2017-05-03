@@ -1,120 +1,76 @@
 'use strict'
 
-const { Logger, transports } = require('winston')
 const { join } = require('path')
 const { assign } = Object
+const { sync: mkdirp } = require('mkdirp')
 
-const ms = require('ms')
-const pad = require('string.prototype.padstart')
-const colors = require('colors/safe')
-const symbol = (process.type === 'renderer') ? 'ρ' : 'β'
+const bunyan = require('bunyan')
 
-const PADDING = 8
-
-const COLORS = {
-  error: 'red',
-  warn: 'yellow',
-  info: 'blue',
-  verbose: 'magenta',
-  debug: 'green'
-}
-
-const seq = timer()
-
-const logger = new Logger({
-  level: 'info',
-  transports: []
+const logger = bunyan.createLogger({
+  name: 'tropy',
+  serializers: { err: bunyan.stdSerializers.err },
+  streams: [],
+  process: process.type,
+  level: 'trace'
 })
 
+function logToStdout() {
+  logger.addStream({
+    name: 'console',
+    stream: process.stdout,
+    level: 'debug'
+  })
+}
+
+function logToFolder(dir) {
+  logger.addStream({
+    type: 'rotating-file',
+    path: join(dir, `${process.type}.log`),
+    level: 'debug',
+    period: '1d',
+    count: 3
+  })
+}
 
 function init(dir) {
-  logger.clear()
+  let logDir = join(dir, 'log')
+  mkdirp(logDir)
 
   switch (ARGS.environment) {
     case 'development':
-      logger.level = 'verbose'
-      logger.add(transports.Console, {
-        handleExceptions: true,
-        humanReadableUnhandledException: true,
-        formatter
-      })
-      // eslint-disable-line no-fallthrough
-
-    case 'production':
-      if (dir) {
-        logger.add(transports.File, {
-          filename: join(dir, `${process.type}.log`),
-          maxsize: 1024 * 1024,
-          maxFiles: 1,
-          tailable: true,
-          handleExceptions: true,
-          humanReadableUnhandledException: true
-        })
+      if (ARGS.stdout) {
+        logToStdout()
       }
-
+      logToFolder(logDir)
       break
-
+    case 'production':
+      logToFolder(logDir)
+      break
     case 'test':
       if (!process.env.CI) {
-        logger.level = 'verbose'
-        logger.add(transports.File, {
-          filename: join(__dirname, '..', '..', 'tmp', 'test.log'),
-          maxsize: 1024 * 1024,
-          maxFiles: 1,
-          tailable: true,
-          handleExceptions: true,
-          humanReadableUnhandledException: true,
+        logger.addStream({
+          path: join(__dirname, '..', '..', 'tmp', 'log', 'test.log'),
+          level: 'debug'
         })
       }
       break
   }
 
-  if (ARGS.debug) logger.level = 'debug'
+  if (ARGS.debug) logger.level('debug')
 
-  logger.debug('logger initialized at level %s', logger.level)
+  logger.debug('logger initialized at level %s',
+               bunyan.nameFromLevel[logger.level()])
 
   return module.exports
 }
 
-function *timer() {
-  for (let a = Date.now(), b;; a = b) {
-    yield ((b = Date.now()), b - a)
-  }
-}
-
-function time() {
-  return colors.gray(pad(`+${ms(seq.next().value)}`, PADDING, ' '))
-}
-
-function colorize(level, string = level) {
-  return colors[COLORS[level] || 'gray'](string)
-}
-
-function text(options) {
-  let meta = assign({}, options.meta)
-  let message = options.message
-
-  if (meta.module) {
-    message = `[${meta.module}] ${message}`
-  }
-
-  return message
-}
-
-function formatter(options) {
-  return `${time()} ${colorize(options.level, symbol)} ${text(options)}`
-}
-
-
 module.exports = assign(init, {
   logger,
-
-  query: logger.query.bind(logger),
-  profile: logger.profile.bind(logger),
-  log: logger.log.bind(logger),
-  debug: logger.debug.bind(logger),
-  verbose: logger.verbose.bind(logger),
-  info: logger.info.bind(logger),
-  warn: logger.warn.bind(logger),
-  error: logger.error.bind(logger)
+  log: logger.info.bind(logger),      // default, info 30
+  fatal: logger.fatal.bind(logger),   // 60
+  error: logger.error.bind(logger),   // 50
+  warn: logger.warn.bind(logger),     // 40
+  info: logger.info.bind(logger),     // 30
+  debug: logger.debug.bind(logger),   // 20
+  trace: logger.trace.bind(logger)    // 10
 })

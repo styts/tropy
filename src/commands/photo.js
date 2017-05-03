@@ -8,7 +8,7 @@ const act = require('../actions')
 const { PHOTO } = require('../constants')
 const { Image } = require('../image')
 const { imagePath } = require('../common/cache')
-const { warn, verbose } = require('../common/log')
+const { warn, info } = require('../common/log')
 const { splice } = require('../common/util')
 const { map, cat, filter, into, compose } = require('transducers.js')
 
@@ -55,7 +55,7 @@ class Create extends Command {
 
         } catch (error) {
           warn(`Failed to create thumbnail: ${error.message}`)
-          verbose(error.stack)
+          info(error.stack)
         }
       }
 

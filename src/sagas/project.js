@@ -3,7 +3,7 @@
 const { OPEN, CLOSE, CLOSED } = require('../constants/project')
 const { Database } = require('../common/db')
 const { Cache } = require('../common/cache')
-const { warn, debug, verbose } = require('../common/log')
+const { warn, debug, info } = require('../common/log')
 const { exec } = require('../commands')
 const { fail } = require('../dialog')
 const { ipc } = require('./ipc')
@@ -115,7 +115,7 @@ module.exports = {
 
     } catch (error) {
       warn(`${action.type} unexpectedly failed in *command: ${error.message}`)
-      verbose(error.stack)
+      info(error.stack)
     }
   },
 
@@ -161,7 +161,7 @@ module.exports = {
         yield aux.map(t => cancel(t))
       }
 
-      verbose('*main terminated')
+      info('*main terminated')
     }
   }
 }
