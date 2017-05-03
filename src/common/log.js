@@ -9,19 +9,20 @@ const bunyan = require('bunyan')
 const logger = bunyan.createLogger({
   name: 'tropy',
   serializers: { err: bunyan.stdSerializers.err },
-  process: process.type
+  streams: [],
+  process: process.type,
+  level: 'trace'
 })
 
 function logToStdout() {
   logger.addStream({
+    name: 'console',
     stream: process.stdout,
     level: 'debug'
   })
 }
 
 function logToFolder(dir) {
-  mkdirp(dir)
-
   logger.addStream({
     type: 'rotating-file',
     path: join(dir, `${process.type}.log`),
@@ -33,10 +34,13 @@ function logToFolder(dir) {
 
 function init(dir) {
   let logDir = join(dir, 'log')
+  mkdirp(logDir)
 
   switch (ARGS.environment) {
     case 'development':
-      logToStdout()
+      if (ARGS.stdout) {
+        logToStdout()
+      }
       logToFolder(logDir)
       break
     case 'production':
@@ -45,7 +49,7 @@ function init(dir) {
     case 'test':
       if (!process.env.CI) {
         logger.addStream({
-          path: join(__dirname, '..', '..', 'tmp', 'test.log'),
+          path: join(__dirname, '..', '..', 'tmp', 'log', 'test.log'),
           level: 'debug'
         })
       }
