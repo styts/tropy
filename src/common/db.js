@@ -99,18 +99,18 @@ class Database extends EventEmitter {
 
       // db.on('trace', query => debug(query))
 
-      db.on('profile', (query, time) => {
-        const message = `db query took ${ms(time)}`
+      db.on('profile', (query, sql_time) => {
+        const message = `db query took ${ms(sql_time)}`
 
         if (ms > 100) {
-          return warn(`SLOW: ${message}`, { query, time })
+          return warn({ query, sql_time }, `SLOW: ${message}`)
         }
 
         if (ms > 25) {
-          return info(message, { query, time })
+          return info({ query, sql_time }, message)
         }
 
-        debug(message, { query, time })
+        debug({ query, sql_time }, message)
       })
     })
   }
